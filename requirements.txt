@@ -1,6 +1,6 @@
 Flask==2.3.3
 gunicorn==21.2.0
-cryptography==41.0.1
+cryptography==38.0.4
 Flask-Cors==3.0.10
 pyotp==2.8.0
 qrcode==7.4
