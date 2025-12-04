@@ -1,0 +1,201 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: #e5e7eb;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem 1.5rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: 0.06em;
+}
+
+.subtitle {
+  margin-top: 0.4rem;
+  color: #9ca3af;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1.3fr;
+    align-items: start;
+  }
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 1rem;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.hint {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.field span {
+  color: #cbd5f5;
+}
+
+input[type="file"],
+input[type="password"],
+input[type="text"] {
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.5rem;
+  border: 1px solid #4b5563;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+input[type="file"] {
+  padding: 0.35rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+}
+
+.btn {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: #111827;
+  color: #e5e7eb;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+  width: 100%;              /* 🔹 new: both Encrypt & Decrypt same width */
+  text-align: center;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.status {
+  display: block;          /* ensure it starts on a new line */
+  min-height: 1.1rem;
+  font-size: 0.85rem;
+  color: #a5b4fc;
+}
+
+
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.7fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 800px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.qr-block {
+  text-align: center;
+}
+
+.qr {
+  width: 180px;
+  height: 180px;
+  border-radius: 0.75rem;
+  background: white;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.secret-label {
+  margin: 0.25rem 0 0.15rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+#secretText {
+  display: block;          /* was inline-block */
+  padding: 0.25rem 0.5rem;
+  background: #020617;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  color: #e5e7eb;
+  margin-top: 0.25rem;
+  margin-bottom: 0.6rem;   /* space before the next text */
+}
+
+
+.form-block {
+  align-self: center;
+}
+
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #6b7280;
+}

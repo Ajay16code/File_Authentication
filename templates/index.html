@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Furious Chargers - AES with 2FA</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Furious Chargers</h1>
+      <p class="subtitle">AES File Encryption with 2-Factor Authentication</p>
+    </header>
+
+    <main class="grid">
+      <!-- Encrypt card -->
+      <section class="card">
+        <h2>Encrypt File</h2>
+        <p class="hint">
+          Upload any text file and protect it with a password. You’ll get an encrypted file to download.
+        </p>
+
+        <form id="encryptForm" class="form" enctype="multipart/form-data">
+          <label class="field">
+            <span>Choose file</span>
+            <input type="file" name="file" required>
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <input type="password" name="password" placeholder="Enter a strong password" required>
+          </label>
+
+          <!-- same style as decrypt button (primary, full width) -->
+          <button type="submit" class="btn primary">Encrypt &amp; Download</button>
+          <div id="encryptStatus" class="status"></div>
+        </form>
+      </section>
+
+      <!-- Decrypt + 2FA card -->
+      <section class="card">
+        <h2>2FA &amp; Decrypt File</h2>
+
+        <div class="two-col">
+          <div class="qr-block">
+            <p class="hint">
+              Scan this QR in Google Authenticator or any TOTP app.
+            </p>
+            <img
+              src="data:image/png;base64,{{ qr_image }}"
+              alt="OTP QR Code"
+              class="qr"
+            >
+            <p class="secret-label">Secret (for demo only)</p>
+            <code id="secretText">{{ otp_secret }}</code>
+          </div>
+
+          <div class="form-block">
+            <form id="decryptForm" class="form" enctype="multipart/form-data">
+              <input type="hidden" id="otpSecret" value="{{ otp_secret }}">
+
+              <label class="field">
+                <span>Encrypted file (.enc)</span>
+                <input type="file" name="encrypted_file" required>
+              </label>
+
+              <label class="field">
+                <span>Decryption password</span>
+                <input type="password" name="decryption_password" required>
+              </label>
+
+              <label class="field">
+                <span>One-Time Password (OTP)</span>
+                <input type="text" name="otp" placeholder="123456" required>
+              </label>
+
+              <!-- now also primary so both big buttons match -->
+              <button type="submit" class="btn primary">
+                Decrypt &amp; Download
+              </button>
+              <div id="decryptStatus" class="status"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Demo project • AES-256 + TOTP 2FA • Furious Chargers</p>
+    </footer>
+  </div>
+
+  <script>
+    function downloadBlob(blob, filename) {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    }
+
+    function getFilenameFromResponse(disposition) {
+      if (!disposition) return null;
+      const match = /filename="?([^"]+)"?/.exec(disposition);
+      return match && match[1] ? match[1] : null;
+    }
+
+    // -------- Encrypt form --------
+    document.getElementById("encryptForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = document.getElementById("encryptStatus");
+      status.textContent = "Encrypting...";
+
+      const formData = new FormData(e.target);
+
+      try {
+        const res = await fetch("/encrypt", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          status.textContent = text || "Encryption failed.";
+          alert("❌ Encryption failed: " + (text || "Unknown error"));
+          return;
+        }
+
+        const blob = await res.blob();
+        const filename =
+          getFilenameFromResponse(res.headers.get("Content-Disposition")) ||
+          "encrypted_file.enc";
+        downloadBlob(blob, filename);
+        status.textContent = "Encrypted file downloaded.";
+        alert("✅ File encrypted and downloaded successfully!");
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Error during encryption.";
+        alert("❌ Error during encryption. Check console.");
+      }
+    });
+
+    // -------- Decrypt form --------
+    document.getElementById("decryptForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = document.getElementById("decryptStatus");
+      status.textContent = "Decrypting...";
+
+      const formData = new FormData(e.target);
+      const otpSecret = document.getElementById("otpSecret").value;
+
+      try {
+        const res = await fetch("/decrypt", {
+          method: "POST",
+          body: formData,
+          headers: {
+            dp: otpSecret
+          }
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          status.textContent = text || "Decryption failed.";
+          alert("❌ Decryption failed: " + (text || "Unknown error"));
+          return;
+        }
+
+        const blob = await res.blob();
+        const filename =
+          getFilenameFromResponse(res.headers.get("Content-Disposition")) ||
+          "decrypted_file.txt";
+        downloadBlob(blob, filename);
+        status.textContent = "Decrypted file downloaded.";
+        alert("✅ File decrypted and downloaded successfully!");
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Error during decryption.";
+        alert("❌ Error during decryption. Check console.");
+      }
+    });
+  </script>
+</body>
+</html>
