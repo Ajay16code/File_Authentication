@@ -145,13 +145,6 @@ http://127.0.0.1:5000
 
 ---
 
-## ScreenShot
-
-
-
-![Furious Chargers UI](screenshots/ui.png)
-
-
 
 ---
 
