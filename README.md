@@ -149,21 +149,7 @@ http://127.0.0.1:5000
 
 
 
-```
-screenshots/
-```
-
-
-
-```
-screenshots/ui.png
-```
-
-
-
-```md
-![Furious Chargers UI](./screenshots/ui.png)
-```
+![Furious Chargers UI](screenshots/ui.png)
 
 
 
